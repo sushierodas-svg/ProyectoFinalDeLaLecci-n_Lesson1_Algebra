@@ -1,0 +1,1137 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>eScholaris | Algebra 1 - Lección 01 Proyecto final</title>
+  <meta name="description" content="Proyecto final de Algebra 1 para crear un mini modelo algebraico con variable, expresión, tabla y explicación." />
+  <style>
+    :root {
+      --green: #183942;
+      --green-2: #0f2b32;
+      --yellow: #F5BE10;
+      --orange: #D96017;
+      --white: #FFFFFF;
+      --ink: #183942;
+      --muted: #5b6b70;
+      --soft: #F6F8F7;
+      --line: rgba(24,57,66,.16);
+      --shadow: 0 24px 60px rgba(24,57,66,.16);
+      --success: #2a895b;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(245,190,16,.20), transparent 32rem),
+        radial-gradient(circle at bottom right, rgba(217,96,23,.10), transparent 30rem),
+        #f7faf9;
+    }
+
+    button, textarea, input, select { font-family: inherit; }
+
+    .app {
+      width: min(1160px, 100%);
+      margin: 0 auto;
+      padding: 18px 18px 30px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px 16px;
+      border-radius: 0 0 24px 24px;
+      background: rgba(24,57,66,.96);
+      box-shadow: 0 14px 36px rgba(24,57,66,.18);
+      color: var(--white);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .logoBox {
+      display: grid;
+      place-items: center;
+      width: 168px;
+      max-width: 38vw;
+      min-height: 48px;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: var(--white);
+      box-shadow: inset 0 0 0 1px rgba(24,57,66,.08);
+    }
+
+    .logoBox img {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
+
+    .courseLabel { min-width: 0; }
+
+    .courseLabel p {
+      margin: 0;
+      font-size: .76rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.72);
+      font-weight: 850;
+    }
+
+    .courseLabel h1 {
+      margin: 3px 0 0;
+      color: var(--white);
+      font-size: clamp(.98rem, 2vw, 1.18rem);
+      line-height: 1.15;
+      max-width: 650px;
+    }
+
+    .progressCluster {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--white);
+      font-weight: 850;
+      white-space: nowrap;
+      font-size: .9rem;
+    }
+
+    .progressTrack {
+      width: 145px;
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255,255,255,.22);
+    }
+
+    .progressFill {
+      height: 100%;
+      width: 14%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--yellow), var(--orange));
+      transition: width .25s ease;
+    }
+
+    .stage {
+      position: relative;
+      margin-top: 20px;
+      min-height: 650px;
+      border-radius: 34px;
+      box-shadow: var(--shadow);
+      overflow: visible;
+      background: var(--white);
+      border: 1px solid rgba(24,57,66,.10);
+    }
+
+    .slide {
+      display: none;
+      min-height: 650px;
+      padding: clamp(24px, 4vw, 54px);
+      position: relative;
+      isolation: isolate;
+    }
+
+    .slide.active { display: grid; }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(24,57,66,.05), transparent 42%),
+        radial-gradient(circle at 96% 8%, rgba(245,190,16,.20), transparent 18rem);
+      pointer-events: none;
+      z-index: -2;
+    }
+
+    .slide.hero {
+      align-items: center;
+      background:
+        linear-gradient(135deg, var(--green), #244f59 70%, #16333b);
+      color: var(--white);
+    }
+
+    .slide.hero::before {
+      background:
+        radial-gradient(circle at 18% 20%, rgba(245,190,16,.25), transparent 18rem),
+        radial-gradient(circle at 88% 80%, rgba(217,96,23,.22), transparent 22rem);
+    }
+
+    .heroGrid {
+      display: grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: clamp(24px, 5vw, 56px);
+      align-items: center;
+    }
+
+    .contentGrid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 430px);
+      gap: clamp(22px, 4vw, 44px);
+      align-items: start;
+    }
+
+    .contentGrid.wide { grid-template-columns: 1fr; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(245,190,16,.16);
+      color: var(--yellow);
+      border: 1px solid rgba(245,190,16,.28);
+      font-size: .78rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .slide h2 {
+      margin: 0;
+      font-size: clamp(1.9rem, 4vw, 3.25rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+      color: var(--green);
+      max-width: 950px;
+    }
+
+    .hero h2 {
+      color: var(--white);
+      font-size: clamp(2.05rem, 5vw, 4.15rem);
+      line-height: .98;
+    }
+
+    .lead {
+      margin: 18px 0 0;
+      font-size: clamp(1rem, 2vw, 1.24rem);
+      line-height: 1.55;
+      color: inherit;
+      opacity: .9;
+      max-width: 800px;
+    }
+
+    .heroPanel, .modelPanel, .workBox, .rubricBox, .reportBox, .helpPanel {
+      padding: 24px;
+      border-radius: 24px;
+      background: #fff;
+      border: 1px solid var(--line);
+      box-shadow: 0 14px 32px rgba(24,57,66,.08);
+    }
+
+    .heroPanel {
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.08)),
+        rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.22);
+      color: var(--white);
+    }
+
+    .miniModel {
+      display: grid;
+      gap: 14px;
+      padding: 24px;
+      border-radius: 22px;
+      background: var(--white);
+      color: var(--green);
+      box-shadow: 0 22px 50px rgba(0,0,0,.18);
+    }
+
+    .miniModel strong {
+      font-size: clamp(2.6rem, 7vw, 5.2rem);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .tagRow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .tag {
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-size: .82rem;
+      font-weight: 850;
+      background: rgba(245,190,16,.15);
+      color: var(--yellow);
+      border: 1px solid rgba(245,190,16,.22);
+    }
+
+    .choiceGrid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .choiceBtn {
+      min-height: 120px;
+      padding: 18px;
+      border: 2px solid rgba(24,57,66,.12);
+      border-radius: 20px;
+      background: #fff;
+      color: var(--green);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color .15s ease, transform .15s ease, background .15s ease;
+    }
+
+    .choiceBtn:hover { transform: translateY(-1px); border-color: rgba(217,96,23,.42); }
+    .choiceBtn.selected { border-color: var(--orange); background: rgba(217,96,23,.08); }
+    .choiceBtn strong { display: block; font-size: 1.1rem; margin-bottom: 8px; }
+    .choiceBtn span { display: block; color: var(--muted); line-height: 1.42; }
+
+    .helpPanel {
+      background:
+        linear-gradient(145deg, rgba(24,57,66,.96), rgba(24,57,66,.86)),
+        var(--green);
+      color: var(--white);
+    }
+
+    .helpPanel h3, .modelPanel h3, .workBox h3, .rubricBox h3, .reportBox h3 {
+      margin: 0 0 10px;
+      font-size: clamp(1.15rem, 2vw, 1.45rem);
+    }
+
+    .helpPanel p, .modelPanel p, .workBox p, .rubricBox p, .reportBox p {
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    .stepList, .checklist {
+      display: grid;
+      gap: 12px;
+      margin: 18px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .stepList li, .checkItem {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.88);
+      border: 1px solid var(--line);
+      color: #31494f;
+      line-height: 1.45;
+    }
+
+    .helpPanel .stepList li {
+      background: rgba(255,255,255,.12);
+      border-color: rgba(255,255,255,.16);
+      color: var(--white);
+    }
+
+    .num, .mark {
+      display: grid;
+      place-items: center;
+      width: 30px;
+      height: 30px;
+      border-radius: 10px;
+      background: rgba(245,190,16,.22);
+      color: var(--green);
+      font-weight: 950;
+    }
+
+    .helpPanel .num {
+      background: rgba(245,190,16,.24);
+      color: var(--yellow);
+    }
+
+    label {
+      display: block;
+      margin: 16px 0 8px;
+      color: var(--green);
+      font-weight: 850;
+    }
+
+    .helpPanel label { color: var(--white); }
+
+    .field, .textarea, .select {
+      width: 100%;
+      border: 2px solid rgba(24,57,66,.12);
+      border-radius: 18px;
+      padding: 15px 16px;
+      font-size: 1rem;
+      color: var(--green);
+      background: #fff;
+      outline: none;
+    }
+
+    .textarea {
+      min-height: 132px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .field:focus, .textarea:focus, .select:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 4px rgba(217,96,23,.12);
+    }
+
+    .twoCols {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .expressionPreview {
+      display: grid;
+      place-items: center;
+      min-height: 150px;
+      margin-top: 18px;
+      border-radius: 22px;
+      background:
+        linear-gradient(145deg, rgba(245,190,16,.20), rgba(217,96,23,.12)),
+        #fff;
+      border: 1px solid var(--line);
+      color: var(--green);
+      font-size: clamp(2.4rem, 6vw, 4.6rem);
+      font-weight: 950;
+      letter-spacing: 0;
+      text-align: center;
+    }
+
+    .tableWrap {
+      overflow-x: auto;
+      margin-top: 18px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    table {
+      width: 100%;
+      min-width: 520px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 13px 14px;
+      border-bottom: 1px solid rgba(24,57,66,.10);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      background: rgba(24,57,66,.06);
+      color: var(--green);
+      font-size: .9rem;
+    }
+
+    td input {
+      width: 100%;
+      min-width: 90px;
+      border: 2px solid rgba(24,57,66,.10);
+      border-radius: 12px;
+      padding: 10px 11px;
+      color: var(--green);
+      font-size: 1rem;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .buttonRow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .copyBtn, .saveBtn, .aiLink, .ghostBtn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 11px 15px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 850;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .copyBtn { background: var(--orange); }
+    .aiLink { background: var(--yellow); color: var(--green); }
+    .ghostBtn {
+      background: #fff;
+      color: var(--green);
+      border: 2px solid rgba(24,57,66,.14);
+    }
+
+    .helpPanel .copyBtn, .helpPanel .aiLink, .helpPanel .ghostBtn {
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .feedback {
+      min-height: 38px;
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(24,57,66,.06);
+      color: #24464d;
+      line-height: 1.45;
+      font-weight: 720;
+    }
+
+    .feedback.success { background: rgba(42,137,91,.13); color: #1d6844; }
+    .feedback.try { background: rgba(245,190,16,.18); color: #6e4f00; }
+
+    .helpPanel .feedback {
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.16);
+      color: var(--white);
+    }
+
+    .rubric {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .rubric div {
+      padding: 14px;
+      border-radius: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      line-height: 1.42;
+    }
+
+    .rubric b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--green);
+    }
+
+    .reportPreview {
+      width: 100%;
+      min-height: 390px;
+      resize: vertical;
+      border: 2px solid rgba(24,57,66,.16);
+      border-radius: 20px;
+      padding: 18px;
+      font-size: .95rem;
+      line-height: 1.55;
+      color: var(--green);
+      background:
+        linear-gradient(180deg, rgba(245,190,16,.08), rgba(255,255,255,0) 40%),
+        #fff;
+      outline: none;
+      white-space: pre-wrap;
+    }
+
+    .navArrow {
+      position: absolute;
+      z-index: 30;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      border: 1px solid rgba(24,57,66,.12);
+      background: var(--green);
+      color: var(--white);
+      font-size: 2rem;
+      font-weight: 900;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 14px 30px rgba(24,57,66,.20);
+      transition: transform .18s ease, background .18s ease, color .18s ease, opacity .18s ease;
+    }
+
+    .navArrow:hover { background: var(--yellow); color: var(--green); transform: translateY(-50%) scale(1.04); }
+    .navArrow:disabled { opacity: .28; cursor: not-allowed; transform: translateY(-50%); }
+    .prev { left: -8px; }
+    .next { right: -8px; }
+
+    .bottomNav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      border: 0;
+      cursor: pointer;
+      background: rgba(24,57,66,.22);
+      transition: width .2s ease, background .2s ease;
+    }
+
+    .dot.active { width: 34px; background: var(--orange); }
+
+    .mobileControls { display: none; gap: 10px; margin-top: 16px; }
+
+    .mobileControls button {
+      flex: 1;
+      padding: 13px 16px;
+      border: 0;
+      border-radius: 16px;
+      background: var(--green);
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .mobileControls button:last-child { background: var(--orange); }
+    .mobileControls button:disabled { opacity: .38; }
+
+    @media (max-width: 940px) {
+      .topbar { align-items: flex-start; flex-direction: column; }
+      .progressCluster { width: 100%; justify-content: space-between; }
+      .progressTrack { flex: 1; width: auto; }
+      .heroGrid, .contentGrid, .choiceGrid, .twoCols { grid-template-columns: 1fr; }
+      .stage, .slide { min-height: 720px; }
+      .navArrow { display: none; }
+      .mobileControls { display: flex; }
+      .rubric { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 540px) {
+      .app { padding: 10px 10px 20px; }
+      .slide { padding: 22px 18px; }
+      .stage { border-radius: 24px; min-height: 760px; }
+      .slide { min-height: 760px; }
+      .logoBox { width: 145px; max-width: 68vw; }
+      .buttonRow { display: grid; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar" aria-label="Encabezado del proyecto final">
+      <div class="brand">
+        <div class="logoBox" aria-label="eScholaris">
+          <img src="escholaris-logo-full-color.png" alt="eScholaris" />
+        </div>
+        <div class="courseLabel">
+          <p>Algebra 1 · Mathematics</p>
+          <h1>Lección 01 · Proyecto final: mini modelo algebraico</h1>
+        </div>
+      </div>
+      <div class="progressCluster" aria-live="polite">
+        <span id="slideCounter">Paso 1 de 7</span>
+        <div class="progressTrack" aria-hidden="true"><div class="progressFill" id="progressFill"></div></div>
+      </div>
+    </header>
+
+    <main class="stage" aria-label="Proyecto final">
+      <button class="navArrow prev" id="prevBtn" aria-label="Ir al paso anterior">‹</button>
+      <button class="navArrow next" id="nextBtn" aria-label="Ir al paso siguiente">›</button>
+
+      <section class="slide hero active" data-title="Inicio">
+        <div class="heroGrid">
+          <div>
+            <div class="eyebrow">Proyecto final · Lección 01</div>
+            <h2>Crea un mini modelo algebraico de una situación real.</h2>
+            <p class="lead">Elegirás una situación donde una parte cambia y otra se mantiene fija. Después construirás una expresión, una tabla y una explicación lista para entregar en Canvas LMS.</p>
+            <div class="tagRow" aria-label="Partes del proyecto">
+              <span class="tag">Situación</span>
+              <span class="tag">Variable</span>
+              <span class="tag">Expresión</span>
+              <span class="tag">Tabla</span>
+              <span class="tag">Explicación</span>
+            </div>
+          </div>
+          <div class="heroPanel">
+            <div class="miniModel" aria-label="Ejemplo de mini modelo algebraico">
+              <strong>5r + 12</strong>
+              <p class="lead" style="font-size:1rem; margin-top:0; color:var(--green);">Ejemplo de estructura: 5 puntos por cada reto completado y 12 puntos adicionales.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Situación">
+        <div class="contentGrid">
+          <div>
+            <div class="eyebrow">Paso 1 · Elige el contexto</div>
+            <h2>Escoge una situación sencilla.</h2>
+            <p class="lead">Elige una idea donde una cantidad dependa de otra. Puedes usar una de estas opciones o escribir una propia.</p>
+            <div class="choiceGrid" id="choiceGrid">
+              <button class="choiceBtn" data-context="Tiempo de práctica" data-example="Practico 15 minutos fijos y 6 minutos extra por cada ronda.">
+                <strong>Tiempo de práctica</strong>
+                <span>Minutos fijos más minutos por cada ronda.</span>
+              </button>
+              <button class="choiceBtn" data-context="Puntos ganados" data-example="Gano 10 puntos iniciales y 4 puntos por cada reto completado.">
+                <strong>Puntos ganados</strong>
+                <span>Puntos iniciales más puntos por cada reto.</span>
+              </button>
+              <button class="choiceBtn" data-context="Páginas leídas" data-example="Leo 8 páginas iniciales y 3 páginas por cada sesión.">
+                <strong>Páginas leídas</strong>
+                <span>Páginas de inicio más páginas por sesión.</span>
+              </button>
+              <button class="choiceBtn" data-context="Distancia recorrida" data-example="Camino 2 kilómetros iniciales y 5 kilómetros por cada tramo.">
+                <strong>Distancia recorrida</strong>
+                <span>Distancia inicial más distancia por tramo.</span>
+              </button>
+            </div>
+          </div>
+          <aside class="modelPanel">
+            <h3>Tu descripción</h3>
+            <p>Escribe 2 o 3 oraciones. Debe notarse qué parte cambia y qué parte se mantiene fija.</p>
+            <label for="context">Situación elegida</label>
+            <input class="field" id="context" placeholder="Ejemplo: Puntos ganados" />
+            <label for="description">Descripción</label>
+            <textarea class="textarea" id="description" placeholder="Describe tu situación en 2 o 3 oraciones."></textarea>
+            <button class="saveBtn" onclick="saveProject()">Guardar descripción</button>
+            <div class="feedback" id="contextFeedback">Cuando guardes, tu información se conservará en esta página.</div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Variable">
+        <div class="contentGrid">
+          <div>
+            <div class="eyebrow">Paso 2 · Define la variable</div>
+            <h2>Decide qué cantidad puede cambiar.</h2>
+            <p class="lead">La variable debe representar algo que puede tomar varios valores: retos, sesiones, clases, días, páginas, tramos o pasos.</p>
+            <div class="workBox">
+              <h3>Completa tu variable</h3>
+              <div class="twoCols">
+                <div>
+                  <label for="variable">Variable</label>
+                  <input class="field" id="variable" maxlength="3" placeholder="Ejemplo: r" />
+                </div>
+                <div>
+                  <label for="variableMeaning">Qué representa</label>
+                  <input class="field" id="variableMeaning" placeholder="Ejemplo: retos completados" />
+                </div>
+              </div>
+              <div class="twoCols">
+                <div>
+                  <label for="unit">Unidad o nombre del total</label>
+                  <input class="field" id="unit" placeholder="Ejemplo: puntos totales" />
+                </div>
+                <div>
+                  <label for="operation">Operación principal</label>
+                  <select class="select" id="operation">
+                    <option value="sumar">Sumar una parte fija</option>
+                    <option value="restar">Restar una parte fija</option>
+                  </select>
+                </div>
+              </div>
+              <button class="saveBtn" onclick="saveProject()">Guardar variable</button>
+              <div class="feedback" id="variableFeedback">Una buena variable se puede explicar en una oración clara.</div>
+            </div>
+          </div>
+          <aside class="helpPanel">
+            <h3>Ejemplo de estructura</h3>
+            <p>No lo copies; úsalo como modelo.</p>
+            <ul class="stepList">
+              <li><span class="num">r</span><span>representa el número de retos completados.</span></li>
+              <li><span class="num">5</span><span>es la cantidad de puntos por cada reto.</span></li>
+              <li><span class="num">12</span><span>es una cantidad fija de puntos adicionales.</span></li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Expresión">
+        <div class="contentGrid">
+          <div>
+            <div class="eyebrow">Paso 3 · Construye la expresión</div>
+            <h2>Combina la parte que cambia y la parte fija.</h2>
+            <p class="lead">Usa un coeficiente para indicar cuánto se gana, lee o avanza por cada valor de la variable. Luego suma o resta la constante.</p>
+            <div class="workBox">
+              <div class="twoCols">
+                <div>
+                  <label for="coefficient">Coeficiente</label>
+                  <input class="field" id="coefficient" type="number" inputmode="decimal" placeholder="Ejemplo: 5" />
+                </div>
+                <div>
+                  <label for="constant">Constante</label>
+                  <input class="field" id="constant" type="number" inputmode="decimal" placeholder="Ejemplo: 12" />
+                </div>
+              </div>
+              <div class="expressionPreview" id="expressionPreview">ax + b</div>
+              <button class="saveBtn" onclick="saveProject()">Guardar expresión</button>
+              <div class="feedback" id="expressionFeedback">Tu expresión se actualizará con la variable, el coeficiente y la constante.</div>
+            </div>
+          </div>
+          <aside class="helpPanel">
+            <h3>Consulta opcional a Owlaris AI</h3>
+            <p>Si necesitas apoyo, pídele que revise tu razonamiento sin resolver todo por ti.</p>
+            <a class="aiLink" href="https://owlaris.app" target="_blank" rel="noopener">Abrir Owlaris AI</a>
+            <button class="copyBtn" onclick="copyPrompt()">Copiar prompt de revisión</button>
+            <div class="feedback" id="promptFeedback">Owlaris AI debe hacer preguntas guía, no construir el proyecto completo.</div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Tabla">
+        <div class="contentGrid">
+          <div>
+            <div class="eyebrow">Paso 4 · Prueba tres valores</div>
+            <h2>Crea una tabla para mostrar cómo funciona tu modelo.</h2>
+            <p class="lead">Escribe tres valores posibles de la variable. La página puede calcular el valor de la expresión si tu coeficiente y constante son números.</p>
+            <div class="workBox">
+              <div class="tableWrap">
+                <table aria-label="Tabla del modelo algebraico">
+                  <thead>
+                    <tr>
+                      <th>Valor de la variable</th>
+                      <th>Expresión evaluada</th>
+                      <th>Valor del total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><input id="value1" type="number" inputmode="decimal" placeholder="Ejemplo: 1" /></td>
+                      <td id="eval1">-</td>
+                      <td id="result1">-</td>
+                    </tr>
+                    <tr>
+                      <td><input id="value2" type="number" inputmode="decimal" placeholder="Ejemplo: 2" /></td>
+                      <td id="eval2">-</td>
+                      <td id="result2">-</td>
+                    </tr>
+                    <tr>
+                      <td><input id="value3" type="number" inputmode="decimal" placeholder="Ejemplo: 3" /></td>
+                      <td id="eval3">-</td>
+                      <td id="result3">-</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="buttonRow">
+                <button class="saveBtn" onclick="calculateTable()">Calcular tabla</button>
+                <button class="ghostBtn" onclick="fillExampleValues()">Usar 1, 2 y 3</button>
+              </div>
+              <div class="feedback" id="tableFeedback">La tabla debe tener tres valores posibles de la variable.</div>
+            </div>
+          </div>
+          <aside class="modelPanel">
+            <h3>Qué demuestra la tabla</h3>
+            <p>La tabla permite verificar si la expresión tiene sentido. Si cambia la variable, cambia el total; si la constante es fija, aparece siempre en el cálculo.</p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Explicación">
+        <div class="contentGrid">
+          <div>
+            <div class="eyebrow">Paso 5 · Explica tu modelo</div>
+            <h2>Justifica por qué tu expresión tiene sentido.</h2>
+            <p class="lead">Tu explicación debe mencionar la variable, el coeficiente, la constante y cómo se conecta todo con la situación.</p>
+            <div class="workBox">
+              <label for="explanation">Explicación breve</label>
+              <textarea class="textarea" id="explanation" placeholder="Mi expresión tiene sentido porque..."></textarea>
+              <button class="saveBtn" onclick="saveProject()">Guardar explicación</button>
+              <div class="feedback" id="explanationFeedback">Intenta escribir de 4 a 6 oraciones claras.</div>
+            </div>
+          </div>
+          <aside class="rubricBox">
+            <h3>Criterios de éxito</h3>
+            <ul class="checklist">
+              <li class="checkItem"><span class="mark">✓</span><span>La situación tiene una parte que cambia y una parte fija.</span></li>
+              <li class="checkItem"><span class="mark">✓</span><span>La variable está definida con claridad.</span></li>
+              <li class="checkItem"><span class="mark">✓</span><span>La expresión coincide con la situación.</span></li>
+              <li class="checkItem"><span class="mark">✓</span><span>La tabla muestra tres valores correctos.</span></li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="slide" data-title="Entrega">
+        <div class="contentGrid wide">
+          <div>
+            <div class="eyebrow">Paso 6 · Entrega en Canvas</div>
+            <h2>Genera tu proyecto final.</h2>
+            <p class="lead">Revisa que todas las partes estén completas. Luego genera el reporte, cópialo y pégalo en Canvas LMS.</p>
+          </div>
+          <div class="reportBox">
+            <h3>Proyecto final listo para Canvas</h3>
+            <p>Incluye descripción, variable, expresión, tabla y explicación.</p>
+            <div class="buttonRow">
+              <button class="saveBtn" onclick="generateReport()">Generar proyecto</button>
+              <button class="copyBtn" onclick="copyReport()">Copiar proyecto</button>
+            </div>
+            <textarea class="reportPreview" id="report" placeholder="Haz clic en “Generar proyecto”."></textarea>
+            <div class="feedback" id="reportFeedback">Tu entrega debe estar escrita con tus propias palabras.</div>
+            <div class="rubric" aria-label="Rúbrica del proyecto final">
+              <div><b>Excelente</b>Modelo completo, expresión correcta, tabla precisa y explicación clara.</div>
+              <div><b>En proceso</b>Modelo entendible, pero falta detalle en la tabla o explicación.</div>
+              <div><b>Necesita mejorar</b>Falta definir variable, expresión o relación con la situación.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="mobileControls" aria-label="Controles móviles">
+      <button id="mobilePrev">‹</button>
+      <button id="mobileNext">›</button>
+    </div>
+
+    <nav class="bottomNav" id="dots" aria-label="Navegación por pasos"></nav>
+  </div>
+
+  <script>
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const mobilePrev = document.getElementById('mobilePrev');
+    const mobileNext = document.getElementById('mobileNext');
+    const counter = document.getElementById('slideCounter');
+    const progressFill = document.getElementById('progressFill');
+    const dots = document.getElementById('dots');
+    const storageKey = 'escholaris-proyecto-final-l01';
+    const project = {};
+    let current = 0;
+
+    slides.forEach((slide, index) => {
+      const dot = document.createElement('button');
+      dot.className = 'dot' + (index === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', 'Ir al paso ' + (index + 1) + ': ' + (slide.dataset.title || ''));
+      dot.addEventListener('click', () => showSlide(index));
+      dots.appendChild(dot);
+    });
+
+    function showSlide(index) {
+      current = Math.max(0, Math.min(index, slides.length - 1));
+      slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+      Array.from(dots.children).forEach((dot, i) => dot.classList.toggle('active', i === current));
+      counter.textContent = `Paso ${current + 1} de ${slides.length}`;
+      progressFill.style.width = `${((current + 1) / slides.length) * 100}%`;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === slides.length - 1;
+      mobilePrev.disabled = current === 0;
+      mobileNext.disabled = current === slides.length - 1;
+      document.querySelector('.stage').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function nextSlide() { showSlide(current + 1); }
+    function prevSlide() { showSlide(current - 1); }
+
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+    mobilePrev.addEventListener('click', prevSlide);
+    mobileNext.addEventListener('click', nextSlide);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') nextSlide();
+      if (event.key === 'ArrowLeft') prevSlide();
+    });
+
+    document.querySelectorAll('.choiceBtn').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.choiceBtn').forEach(btn => btn.classList.remove('selected'));
+        button.classList.add('selected');
+        document.getElementById('context').value = button.dataset.context;
+        document.getElementById('description').value = button.dataset.example;
+        setFeedback('contextFeedback', 'Situación seleccionada. Puedes editarla con tus propias palabras.');
+        saveProject();
+      });
+    });
+
+    ['context', 'description', 'variable', 'variableMeaning', 'unit', 'operation', 'coefficient', 'constant', 'value1', 'value2', 'value3', 'explanation'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        updateExpression();
+        if (id.startsWith('value') || id === 'coefficient' || id === 'constant' || id === 'variable' || id === 'operation') {
+          calculateTable(false);
+        }
+        saveProject(false);
+      });
+    });
+
+    function readValue(id) {
+      return document.getElementById(id).value.trim();
+    }
+
+    function asNumber(id) {
+      const value = Number(readValue(id));
+      return Number.isFinite(value) ? value : null;
+    }
+
+    function getExpression() {
+      const variable = readValue('variable') || 'x';
+      const coefficient = readValue('coefficient') || 'a';
+      const constant = readValue('constant') || 'b';
+      const operation = readValue('operation') === 'restar' ? '-' : '+';
+      return `${coefficient}${variable} ${operation} ${constant}`;
+    }
+
+    function updateExpression() {
+      document.getElementById('expressionPreview').textContent = getExpression();
+    }
+
+    function setFeedback(id, message, mode = 'success') {
+      const feedback = document.getElementById(id);
+      feedback.className = 'feedback ' + mode;
+      feedback.textContent = message;
+    }
+
+    function saveProject(showFeedback = true) {
+      ['context', 'description', 'variable', 'variableMeaning', 'unit', 'operation', 'coefficient', 'constant', 'value1', 'value2', 'value3', 'explanation'].forEach(id => {
+        project[id] = readValue(id);
+      });
+      project.expression = getExpression();
+      try { localStorage.setItem(storageKey, JSON.stringify(project)); } catch (error) {}
+      if (showFeedback) {
+        setFeedback('contextFeedback', 'Información guardada.');
+        setFeedback('variableFeedback', 'Variable guardada.');
+        setFeedback('expressionFeedback', 'Expresión guardada.');
+        setFeedback('explanationFeedback', 'Explicación guardada.');
+      }
+    }
+
+    function loadProject() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(storageKey) || '{}');
+        Object.assign(project, saved);
+        Object.keys(saved).forEach(id => {
+          const field = document.getElementById(id);
+          if (field) field.value = saved[id];
+        });
+        if (saved.context) {
+          document.querySelectorAll('.choiceBtn').forEach(button => {
+            button.classList.toggle('selected', button.dataset.context === saved.context);
+          });
+        }
+      } catch (error) {}
+      updateExpression();
+      calculateTable(false);
+    }
+
+    function fillExampleValues() {
+      document.getElementById('value1').value = '1';
+      document.getElementById('value2').value = '2';
+      document.getElementById('value3').value = '3';
+      calculateTable();
+    }
+
+    function calculateTable(showFeedback = true) {
+      const coefficient = asNumber('coefficient');
+      const constant = asNumber('constant');
+      const variable = readValue('variable') || 'x';
+      const operation = readValue('operation') === 'restar' ? '-' : '+';
+      [1, 2, 3].forEach(index => {
+        const value = asNumber('value' + index);
+        const evalCell = document.getElementById('eval' + index);
+        const resultCell = document.getElementById('result' + index);
+        if (coefficient === null || constant === null || value === null) {
+          evalCell.textContent = '-';
+          resultCell.textContent = '-';
+          return;
+        }
+        const result = operation === '-' ? coefficient * value - constant : coefficient * value + constant;
+        evalCell.textContent = `${coefficient}(${value}) ${operation} ${constant}`;
+        resultCell.textContent = `${result}`;
+      });
+      saveProject(false);
+      if (showFeedback) setFeedback('tableFeedback', 'Tabla calculada. Revisa si los valores tienen sentido en tu situación.');
+    }
+
+    function tableLines() {
+      return [1, 2, 3].map(index => {
+        const value = readValue('value' + index) || '___';
+        const evalText = document.getElementById('eval' + index).textContent;
+        const result = document.getElementById('result' + index).textContent;
+        return `Valor ${index}: ${readValue('variable') || 'x'} = ${value} | ${evalText} | total = ${result}`;
+      }).join('\n');
+    }
+
+    function generateReport() {
+      calculateTable(false);
+      saveProject(false);
+      const today = new Date().toLocaleDateString('es-GT');
+      const report = [
+        'PROYECTO FINAL DE LECCIÓN',
+        'Algebra 1 - Mathematics',
+        'Lección 01: Lenguaje algebraico, variables y expresiones',
+        'Fecha: ' + today,
+        'Estudiante: ______________________________',
+        '',
+        '1. Descripción de la situación',
+        readValue('description') || 'Sin descripción registrada.',
+        '',
+        '2. Variable',
+        `${readValue('variable') || '___'} representa ${readValue('variableMeaning') || '______________________________'}.`,
+        '',
+        '3. Expresión algebraica',
+        getExpression(),
+        '',
+        '4. Tabla con tres valores',
+        tableLines(),
+        '',
+        '5. Explicación',
+        readValue('explanation') || 'Sin explicación registrada.',
+        '',
+        'Criterios revisados:',
+        '- La situación tiene una parte que cambia y una parte fija.',
+        '- La variable está definida con claridad.',
+        '- La expresión coincide con la situación.',
+        '- La tabla muestra tres valores posibles.'
+      ].join('\n');
+      document.getElementById('report').value = report;
+      setFeedback('reportFeedback', 'Proyecto generado. Revisa el texto antes de copiarlo en Canvas.');
+    }
+
+    async function copyReport() {
+      const report = document.getElementById('report');
+      if (!report.value.trim()) generateReport();
+      try {
+        await navigator.clipboard.writeText(report.value);
+        setFeedback('reportFeedback', 'Proyecto copiado al portapapeles.');
+      } catch (error) {
+        report.focus();
+        report.select();
+        setFeedback('reportFeedback', 'Selecciona el texto y cópialo manualmente.', 'try');
+      }
+    }
+
+    async function copyPrompt() {
+      const prompt = 'Estoy creando un mini modelo algebraico para Algebra 1. Mi situación es: ' + (readValue('description') || '____') + '. Mi variable es ' + (readValue('variable') || 'x') + ' y mi expresión tentativa es ' + getExpression() + '. No hagas mi proyecto por mí. Hazme preguntas guía para revisar si mi variable, mi coeficiente, mi constante y mi tabla tienen sentido.';
+      try {
+        await navigator.clipboard.writeText(prompt);
+        setFeedback('promptFeedback', 'Prompt copiado. Pégalo en Owlaris AI para revisar tu razonamiento.');
+      } catch (error) {
+        setFeedback('promptFeedback', prompt, 'try');
+      }
+    }
+
+    loadProject();
+    showSlide(0);
+  </script>
+</body>
+</html>
